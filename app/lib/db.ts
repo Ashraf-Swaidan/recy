@@ -7,18 +7,26 @@ interface MongooseConn {
   promise: Promise<Mongoose> | null;
 }
 
-// Extend the global scope type
+// Declare the global namespace for NodeJS
 declare global {
-  var mongoose: MongooseConn | undefined;
+  namespace NodeJS {
+    interface Global {
+      mongoose: MongooseConn | undefined;
+    }
+  }
 }
 
-let cached: MongooseConn = global.mongoose || {
+let cached: MongooseConn = (global as typeof globalThis & {
+  mongoose: MongooseConn | undefined;
+}).mongoose || {
   conn: null,
   promise: null,
 };
 
 if (!cached) {
-  cached = global.mongoose = {
+  cached = (global as typeof globalThis & {
+    mongoose: MongooseConn | undefined;
+  }).mongoose = {
     conn: null,
     promise: null,
   };
