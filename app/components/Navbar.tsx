@@ -5,7 +5,7 @@ import React from "react";
 
 export default async function Navbar ()  {
   const { userId }= await auth();
-  console.log(auth())
+
   return (
     <div className="bg-stone-50 rounded-b-xl">
       <ul className="flex justify-between py-4 px-6">
