@@ -54,7 +54,8 @@ export async function POST(req: Request) {
 
   // Do something with the payload
   const { id } = evt.data;
-  if(!id) return null;
+  if(!id)
+     return NextResponse.json({message:'id error'});
   const eventType = evt.type;
 
   // Prevent processing if the event is already processed
