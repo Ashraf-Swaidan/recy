@@ -1,14 +1,14 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
-import { createUser, updateUser, deleteUser } from "../../../actions/user.action";
+import { WebhookEvent} from "@clerk/nextjs/server";
+import { createUser } from "../../../actions/user.action";
 import { NextResponse } from "next/server";
-import { createClerkClient } from '@clerk/backend'
+import { createClerkClient } from "@clerk/backend";
 
 export async function POST(req: Request) {
-  // Initialize Clerk Client
-  const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
+  // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Error occurred -- no svix headers", {
+    return new Response("Error occured -- no svix headers", {
       status: 400,
     });
   }
@@ -47,26 +47,19 @@ export async function POST(req: Request) {
     }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error occurred", {
+    return new Response("Error occured", {
       status: 400,
     });
   }
 
   // Do something with the payload
+  // For this guide, you simply log the payload to the console
   const { id } = evt.data;
-  if(!id)
-     return NextResponse.json({message:'id error'});
   const eventType = evt.type;
 
-  // Prevent processing if the event is already processed
-  const userMetadata = await clerkClient.users.getUser(id);
-  if (userMetadata.publicMetadata?.processed === true) {
-    return new Response("Event already processed", { status: 200 });
-  }
-
-  // Handling the event based on type
   if (eventType === "user.created") {
-    const { email_addresses, image_url, first_name, last_name, username } = evt.data;
+    const { id, email_addresses, image_url, first_name, last_name, username } =
+      evt.data;
 
     const user = {
       clerkId: id,
@@ -77,67 +70,21 @@ export async function POST(req: Request) {
       lastName: last_name,
     };
 
+    console.log(user);
+
     const newUser = await createUser(user);
 
     if (newUser) {
-      // Mark the user as processed to prevent webhook loop
-
       await clerkClient.users.updateUserMetadata(id, {
         publicMetadata: {
           userId: newUser._id,
-          processed: true,
         },
       });
     }
 
     return NextResponse.json({ message: "New user created", user: newUser });
   }
-
-  if (eventType === "user.updated") {
-    const { email_addresses, image_url, first_name, last_name, username } = evt.data;
-
-    const updatedUser = {
-      email: email_addresses[0].email_address,
-      username: username!,
-      photo: image_url!,
-      firstName: first_name,
-      lastName: last_name,
-    };
-
-
-    const user = await updateUser(id, updatedUser);
-
-    if (user) {
-      // Mark the user as processed
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: {
-          userId: user._id,
-          processed: true,
-        },
-      });
-    }
-
-    return NextResponse.json({ message: "User updated", user });
-  }
-
-  if (eventType === "user.deleted") {
-    const { id } = evt.data;
-    if (!id) {
-      return NextResponse.json({ message: 'No such id' })
-    }
-    await deleteUser(id);
-
-    // Mark the user as processed
-    await clerkClient.users.updateUserMetadata(id, {
-      publicMetadata: {
-        processed: true,
-      },
-    });
-
-    return NextResponse.json({ message: "User deleted" });
-  }
-
-  console.log(`Webhook with ID ${id} and type ${eventType}`);
+  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
