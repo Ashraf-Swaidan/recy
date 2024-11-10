@@ -1,11 +1,15 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent} from "@clerk/nextjs/server";
-import { createUser } from "../../../actions/user.action";
+import { createUser, updateUser, deleteUser } from "../../../actions/user.action";
 import { NextResponse } from "next/server";
+import { createClerkClient } from '@clerk/backend'
+
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
+
+  const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -72,16 +76,51 @@ export async function POST(req: Request) {
 
     const newUser = await createUser(user);
 
-    // if (newUser) {
-    //   await clerkClient.users.updateUserMetadata(id, {
-    //     publicMetadata: {
-    //       userId: newUser._id,
-    //     },
-    //   });
-    // }
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
 
     return NextResponse.json({ message: "New user created", user: newUser });
   }
+
+  if (eventType === "user.updated") {
+    const { id, email_addresses, image_url, first_name, last_name, username } = evt.data;
+
+    const updatedUser = {
+      email: email_addresses[0].email_address,
+      username: username!,
+      photo: image_url!,
+      firstName: first_name,
+      lastName: last_name,
+    };
+
+    const user = await updateUser(id, updatedUser);
+
+    if (user) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: user._id,
+        },
+      });
+    }
+
+
+    return NextResponse.json({ message: "User updated", user });
+  }
+
+  if (eventType === "user.deleted") {
+    const {id} = evt.data;
+    if(!id){
+      return NextResponse.json({message: 'No such id'})
+    }
+    await deleteUser(id);
+    return NextResponse.json({ message: "User deleted" });
+  }
+
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   console.log("Webhook body:", body);
 

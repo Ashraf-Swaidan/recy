@@ -82,7 +82,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-stone-100 shadow-md flex flex-col items-center gap-4 p-4">
+        <div className="md:hidden bg-stone-50 shadow-md flex flex-col items-center gap-4 p-4">
           <Link href="/">
             <div
               className={`${

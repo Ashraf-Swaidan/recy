@@ -38,8 +38,8 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-20 py-12 lg:py-20">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 ">
           {/* Left side content */}
           <div className="flex-1 space-y-8 text-center lg:text-left z-10">
             {/* Logo */}
@@ -75,7 +75,7 @@ const Hero = () => {
               </div>
               
               {/* Stats */}
-              <div className="flex justify-center lg:justify-start gap-8 pt-4">
+              {/* <div className="flex justify-center lg:justify-start gap-8 pt-4">
                 <div className="text-center lg:text-left">
                   <p className="text-2xl font-bold text-orange-500">15k+</p>
                   <p className="text-sm text-gray-600">Active Users</p>
@@ -84,19 +84,19 @@ const Hero = () => {
                   <p className="text-2xl font-bold text-orange-500">50k+</p>
                   <p className="text-sm text-gray-600">Recipes Shared</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Right side image */}
           <div className="flex-1 w-full max-w-xl lg:max-w-none z-10">
-            <div className="relative w-full aspect-square lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src="/food-dish.png"
                 alt="Delicious food dish"
                 fill
                 className="object-cover transform hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 80vw, 40vw"
                 priority
               />
               {/* Image overlay gradient */}

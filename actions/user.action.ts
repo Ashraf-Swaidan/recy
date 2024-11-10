@@ -12,3 +12,25 @@ export async function createUser(user: any){
         console.log(error);
     }
 }
+
+// Update user
+export async function updateUser(clerkId: string, updatedData: any) {
+    try {
+      await connect();
+      const user = await User.findOneAndUpdate({ clerkId }, updatedData, { new: true });
+      return JSON.parse(JSON.stringify(user));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  // Delete user
+  export async function deleteUser(clerkId: string) {
+    try {
+      await connect();
+      await User.findOneAndDelete({ clerkId });
+      return { message: "User deleted successfully" };
+    } catch (error) {
+      console.log(error);
+    }
+  }
