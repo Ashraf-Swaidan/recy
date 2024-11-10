@@ -17,7 +17,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className=" shadow-md">
+    <div className="">
       <nav className="flex items-center justify-between py-4 px-6">
         {/* Logo and Links */}
         <div className="flex items-center gap-7">
@@ -45,15 +45,45 @@ const Navbar = () => {
                 Create Recipe
               </div>
             </Link>
+
+            {/* Login and Signup links for desktop if user is signed out */}
+            {!userId && (
+              <>
+                <Link href="/sign-in">
+                  <div
+                    className={`${
+                      pathname === "/sign-in"
+                        ? "font-bold text-orange-600"
+                        : "text-stone-600"
+                    } `}
+                  >
+                    Login
+                  </div>
+                </Link>
+                <Link href="/sign-up">
+                  <div
+                    className={`${
+                      pathname === "/sign-up"
+                        ? "font-bold text-orange-600"
+                        : "text-stone-600"
+                    } `}
+                  >
+                    Sign Up
+                  </div>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
         {/* Right-side Links and Mobile Menu Icons */}
         <div className="flex items-center gap-6">
           {/* UserButton for Mobile and Desktop */}
-          <div className="flex items-center">
-            <UserButton />
-          </div>
+          {userId ? (
+            <div className="flex items-center">
+              <UserButton />
+            </div>
+          ) : null}
 
           {/* Hamburger Icon for Mobile */}
           <div className="md:hidden">
@@ -105,6 +135,8 @@ const Navbar = () => {
               Create Recipe
             </div>
           </Link>
+
+          {/* Login and Signup links for mobile if user is signed out */}
           {!userId ? (
             <>
               <Link href="/sign-in">

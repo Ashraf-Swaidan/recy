@@ -1,19 +1,27 @@
 import type { Metadata } from "next";
-
+import Image from "next/image";
 import {
   ClerkProvider,
   ClerkLoaded,
   ClerkLoading
 } from '@clerk/nextjs'
-// import localFont from "next/font/local";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+// import {Inter} from 'next/font/google';
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
+// const inter = Inter({
+//   subsets: ["latin"],
+//   weight: ["400", "700"],  
+//   variable: "--font-inter",
 // });
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
 // const geistMono = localFont({
 //   src: "./fonts/GeistMonoVF.woff",
 //   variable: "--font-geist-mono",
@@ -33,9 +41,19 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <body>
+      <body className={geistSans.className}>
         <ClerkLoading>
-          <div>Loading app...</div>
+          <div className="flex flex-col gap-6 items-center justify-center h-screen">
+         
+            <Image
+            src="/yay.gif"
+            alt="loading.." 
+            width={400}
+            height={400}
+            className="rounded-full bg-transparent"
+           />
+           
+          </div>
         </ClerkLoading>
         <ClerkLoaded>
           <Navbar />
