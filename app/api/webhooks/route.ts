@@ -4,7 +4,7 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "../../../actions/user.action";
 import { NextResponse } from "next/server";
 import { createClerkClient } from "@clerk/backend";
-import User from "@/app/lib/models/user.model"; // Make sure the path is correct
+import User from "@/app/lib/models/user.model";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -82,17 +82,16 @@ export async function POST(req: Request) {
         const { id, email_addresses, image_url, first_name, last_name, username } =
           evt.data;
 
-        // Get the userId from metadata
-        const user = await clerkClient.users.getUser(id);
-        const userId = user.publicMetadata.userId as string;
-
-        if (!userId) {
-          return new Response("User ID not found in metadata", { status: 400 });
+        // Find user by clerkId instead of using metadata
+        const existingUser = await User.findOne({ clerkId: id });
+        
+        if (!existingUser) {
+          return new Response("User not found", { status: 404 });
         }
 
         // Update the user in MongoDB
         const updatedUser = await User.findByIdAndUpdate(
-          userId,
+          existingUser._id,
           {
             email: email_addresses[0].email_address,
             username: username!,
@@ -100,7 +99,7 @@ export async function POST(req: Request) {
             firstName: first_name,
             lastName: last_name,
           },
-          { new: true } // Return the updated document
+          { new: true }
         );
 
         return NextResponse.json({
@@ -110,21 +109,17 @@ export async function POST(req: Request) {
       }
 
       case "user.deleted": {
-        // Get the userId from metadata
-        if(!id){
-          return NextResponse.json({message:'No id'})
-        }
-        const user = await clerkClient.users.getUser(id);
-        const userId = user.publicMetadata.userId as string;
-
-        if (!userId) {
-          return new Response("User ID not found in metadata", { status: 400 });
+        // Find and delete user by clerkId instead of using metadata
+        const deletedUser = await User.findOneAndDelete({ clerkId: id });
+        
+        if (!deletedUser) {
+          return new Response("User not found", { status: 404 });
         }
 
-        // Delete the user from MongoDB
-        await User.findByIdAndDelete(userId);
-
-        return NextResponse.json({ message: "User deleted" });
+        return NextResponse.json({ 
+          message: "User deleted",
+          user: deletedUser 
+        });
       }
 
       default:
@@ -133,6 +128,6 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error("Error processing webhook:", error);
-    return new Response("Error processing webhook", { status: 500 });
+    return new Response(`Error processing webhook: ${error instanceof Error ? error.message : 'Unknown error'}`, { status: 500 });
   }
 }
