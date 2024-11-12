@@ -9,7 +9,7 @@ interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const Page = async ({ params }: PageProps) => {
+const Page = ({ params }: PageProps) => {
   const { id } = params;
 
   return (
