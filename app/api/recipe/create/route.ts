@@ -3,24 +3,7 @@ import { connect } from '@/app/lib/db';
 import Recipe from '@/app/lib/models/recipe.model';
 import { currentUser } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from 'next/server';
-
-// Type definitions for better type safety
-interface Ingredient {
-  name: string;
-  quantity: string;
-}
-
-interface RecipeBody {
-  title: string;
-  description: string;
-  ingredients: Ingredient[];
-  instructions: string[];
-  prepTime: number;
-  cookTime: number;
-  servings: number;
-  tags: string[];
-  imageUrl?: string;
-}
+import { RecipeInterface  } from '@/app/lib/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse request body
-    const body: RecipeBody = await request.json();
+    const body: RecipeInterface = await request.json();
 
     // Validate required fields
     if (!body.title || !body.ingredients || !body.instructions) {

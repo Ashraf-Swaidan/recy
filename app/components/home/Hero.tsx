@@ -27,16 +27,7 @@ const HeroButton: React.FC<HeroButtonProps> = ({ variant, href, children }) => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[calc(100vh-80px)] bg-gradient-to-b from-orange-50 to-white overflow-hidden">
-      {/* Decorative background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" 
-             style={{ 
-               backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FF4500' fill-opacity='0.2'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E\")",
-               backgroundRepeat: 'repeat'
-             }}>
-        </div>
-      </div>
+    <section className=" bg-gradient-to-b from-orange-50 to-white">
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-20 py-12 lg:py-20">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 ">
