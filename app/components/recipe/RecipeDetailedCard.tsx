@@ -1,13 +1,39 @@
 import React from 'react';
 import { Clock, Users, ChefHat, Calendar, Heart, Bookmark } from 'lucide-react';
-import { RecipeInterface, UserInterface } from '@/app/lib/types';
+import { fetchRecipeById } from '@/actions/recipe.action';
+import { findRecipeOwner } from '@/actions/user.action';
 
 interface RecipeDetailedCardProps {
-  recipe: RecipeInterface;
-  owner: UserInterface;
+ id: string
 }
 
-const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = ({ recipe, owner }) => {
+const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => {
+  
+  const recipe = await fetchRecipeById(id);
+  if(!recipe) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-orange-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow-lg">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Recipe Not Found</h1>
+          <p className="text-gray-600">We couldn't find the recipe you're looking for.</p>
+        </div>
+      </div>
+    )
+  } 
+
+  const owner = await findRecipeOwner(recipe?.createdBy);
+
+  if(!owner) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-orange-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow-lg">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Chef Not Found</h1>
+          <p className="text-gray-600">We couldn't find the chef who created this recipe.</p>
+        </div>
+      </div>
+    )
+  }
+  
   const totalTime = recipe.prepTime + recipe.cookTime;
   const formattedDate = new Date(recipe.createdAt).toLocaleDateString('en-US', {
     month: 'long',

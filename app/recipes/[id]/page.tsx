@@ -1,41 +1,24 @@
-import React from 'react'
-import { fetchRecipeById } from '@/actions/recipe.action';
-import { findRecipeOwner } from '@/actions/user.action';
+import React, { Suspense } from 'react'
 import RecipeDetailedCard from '@/app/components/recipe/RecipeDetailedCard';
+import RecipeDetailedCardSkeleton from '@/app/components/skeletons/RecipeDetailedCardSkeleton';
 
-  interface RecipePageProps{
-    params: {
-      id: string;
-    }
-  }
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-const page = async ({params} : RecipePageProps) => {
-  const {id} = params;
-  const recipe = await fetchRecipeById(id);
-  
-  if(!recipe) {
-    return (
-      <div>
-        <h1>Such Recipe was not found :l</h1>
-      </div>
-    )
-  } 
-
-  const recipeOwner = await findRecipeOwner(recipe?.createdBy);
-
-  if(!recipeOwner) {
-    return (
-      <div>
-        <h1>The Chef behind the recipe was not found :l</h1>
-      </div>
-    )
-  }
+const Page = async ({ params, searchParams }: PageProps) => {
+  const { id } = params;
 
   return (
-    <div className='bg-orange-50 p-6'>
-      <RecipeDetailedCard recipe={recipe} owner={recipeOwner}/>
+    <div className="min-h-screen bg-orange-50 py-8 px-4 sm:px-6 lg:px-8">
+    <Suspense fallback={<RecipeDetailedCardSkeleton />}>
+      <RecipeDetailedCard id={id}/>
+    </Suspense>
     </div>
   )
 }
 
-export default page
+export default Page;

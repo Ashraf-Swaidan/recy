@@ -1,13 +1,9 @@
 "use server";
-
 import { connect } from '@/app/lib/db';
 import Recipe from '@/app/lib/models/recipe.model';
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import User from '@/app/lib/models/user.model';
-import { NextResponse } from 'next/server';
 import { RecipeInterface } from '@/app/lib/types';
-
+import { Types } from 'mongoose';
 
   export async function fetchRecipes() {
     try {
@@ -41,6 +37,10 @@ import { RecipeInterface } from '@/app/lib/types';
       await connect();
 
       // Fetch the recipe using the id param
+      if (!Types.ObjectId.isValid(id)) {
+        return null;
+    };
+
       const recipe = await Recipe.findById(id).lean().exec() as RecipeInterface | null;
 
       // Notify the user if there was no recipe with that id

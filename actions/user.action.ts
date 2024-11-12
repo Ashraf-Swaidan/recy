@@ -3,7 +3,7 @@
 import User from "@/app/lib/models/user.model";
 import { UserInterface } from "@/app/lib/types";
 import { connect } from '@/app/lib/db';
-
+import { Types } from "mongoose";
 export async function createUser(user: any){
     try{
         await connect();
@@ -16,6 +16,7 @@ export async function createUser(user: any){
 
 export async function findRecipeOwner(id: string): Promise<UserInterface | null>{
     try{
+        if(!Types.ObjectId.isValid(id)) return null;
         const owner = await User.findById(id).lean().exec() as UserInterface | null;
         if(!owner) return null;
         return owner;
