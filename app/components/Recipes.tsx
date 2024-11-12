@@ -2,13 +2,30 @@
 import { fetchRecipes } from '@/actions/recipe.action';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RecipeInterface } from '../lib/types';
+
+interface Recipe {
+  _id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  prepTime: number;
+  cookTime: number;
+  servings: number;
+  createdBy: string;
+  owner: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    photo: string;
+  };
+}
 
 const RecipeList = async () => {
-  let recipes: RecipeInterface[] = [];
+  let recipes: Recipe[] = [];
 
   try {
     recipes = await fetchRecipes(); // Fetch the raw recipes data from DB
+    console.log(recipes);
   } catch (error) {
     console.error('Error fetching recipes:', error);
     return <p className="text-red-500">Error: Failed to load recipes</p>;
