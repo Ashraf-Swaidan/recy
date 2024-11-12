@@ -2,7 +2,7 @@ import React from 'react';
 import { Clock, Users, ChefHat, Calendar, Heart, Bookmark } from 'lucide-react';
 import { fetchRecipeById } from '@/actions/recipe.action';
 import { findRecipeOwner } from '@/actions/user.action';
-
+import Image from 'next/image';
 interface RecipeDetailedCardProps {
  id: string
 }
@@ -47,10 +47,12 @@ const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => 
       <header className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <img
+            <Image
               src={owner.photo}
               alt={owner.username}
               className="w-16 h-16 rounded-full border-2 border-orange-200 shadow-md"
+              width={64}
+              height={64}
             />
             <div>
               <h3 className="text-lg font-semibold text-gray-800">{owner.username}</h3>
@@ -81,9 +83,11 @@ const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => 
       {/* Recipe Image */}
       {recipe.imageUrl && (
         <div className="relative h-96 mb-8 rounded-xl overflow-hidden shadow-lg">
-          <img
+          <Image
             src={recipe.imageUrl}
             alt={recipe.title}
+            layout='fill'
+            objectFit='cover'
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
