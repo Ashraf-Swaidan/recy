@@ -10,7 +10,7 @@ import RecipeDetailedCard from '@/app/components/recipe/RecipeDetailedCard';
   }
 
 const page = async ({params} : RecipePageProps) => {
-  const {id} = await params;
+  const {id} = params;
   const recipe = await fetchRecipeById(id);
   
   if(!recipe) {
