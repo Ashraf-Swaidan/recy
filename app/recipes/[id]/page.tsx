@@ -1,13 +1,13 @@
 import React, { Suspense } from 'react'
 import RecipeDetailedCard from '@/app/components/recipe/RecipeDetailedCard';
 import RecipeDetailedCardSkeleton from '@/app/components/skeletons/RecipeDetailedCardSkeleton';
-import type { Metadata, ResolvingMetadata } from 'next'
+
 
 type Props = {
   params: Promise<{ id: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
-const Page = async ({ params }: Props, parent: ResolvingMetadata) => {
+const Page = async ({ params }: Props) => {
   const id = (await params).id
 
   return (
