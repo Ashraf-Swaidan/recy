@@ -4,7 +4,7 @@ import { Plus, Minus, UtensilsCrossed } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { UploadButton } from '../lib/uploadthing';
-import "@uploadthing/react/styles.css";
+
 import { ClientUploadedFileData } from 'uploadthing/types';
 interface Ingredient {
   id: number;
@@ -175,6 +175,7 @@ const CreateRecipe = () => {
                   // Do something with the error.
                   alert(`ERROR! ${error.message}`);
                 }}
+               
                  />
               </div>
              
