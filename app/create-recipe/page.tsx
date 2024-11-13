@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Plus, Minus, UtensilsCrossed } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { UploadButton } from '../lib/uploadthing';
+import "@uploadthing/react/styles.css";
 
 interface Ingredient {
   id: number;
@@ -14,10 +16,16 @@ const CreateRecipe = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
-  
+  const [imageUrl, setImageUrl] = useState<string>(''); 
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     { id: 1, name: '', quantity: '' }
   ]);
+
+  const handleUploadComplete = (res: any) => {
+    const uploadedUrl = res[0]?.url;
+    setImageUrl(uploadedUrl); // Set image URL from UploadThing response
+    console.log("Upload Completed");
+  };
 
   const addIngredient = () => {
     const newId = ingredients.length + 1;
@@ -66,8 +74,9 @@ const CreateRecipe = () => {
       cookTime: Number(formData.get('cookTime')),
       servings: Number(formData.get('servings')),
       tags,
-      imageUrl: formData.get('imageUrl') || '',
+      imageUrl
     };
+
 
     try {
       const response = await fetch('/api/recipe/create', {
@@ -154,17 +163,22 @@ const CreateRecipe = () => {
               />
             </div>
 
-            <div>
+            <div className='flex flex-col justify-start items-start'>
               <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
                 Image URL (Optional)
               </label>
-              <input
-                type="url"
-                id="imageUrl"
-                name="imageUrl"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition"
-                placeholder="Enter image URL"
-              />
+              <div>
+                  <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={handleUploadComplete}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+                 />
+              </div>
+             
+             
             </div>
           </div>
 

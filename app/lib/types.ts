@@ -28,4 +28,21 @@ export interface RecipeInterface {
     firstName?: string;
     lastName?: string;
   }
+
+  export interface RecipeWithOwner {
+    _id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    prepTime: number;
+    cookTime: number;
+    servings: number;
+    createdBy: string;
+    owner: {
+      _id: string;
+      firstName: string;
+      lastName: string;
+      photo: string;
+    };
+  }
   

@@ -11,13 +11,15 @@
   "dependencies": {
     "@clerk/backend": "^1.16.0",
     "@clerk/nextjs": "^6.3.0",
+    "@uploadthing/react": "^7.1.1",
     "lucide-react": "^0.456.0",
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.1",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "svix": "^1.39.0"
+    "svix": "^1.39.0",
+    "uploadthing": "^7.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",
