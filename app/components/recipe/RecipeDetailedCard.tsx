@@ -1,14 +1,18 @@
 import React from 'react';
-import { Clock, Users, ChefHat, Calendar, Heart, Bookmark } from 'lucide-react';
+import { Clock, Users, ChefHat, Calendar, Heart, Bookmark, CookingPot } from 'lucide-react';
 import { fetchRecipeById } from '@/actions/recipe.action';
 import { findRecipeOwner } from '@/actions/user.action';
 import Image from 'next/image';
+import { currentUser } from '@clerk/nextjs/server';
+import Link from 'next/link';
 interface RecipeDetailedCardProps {
  id: string
 }
 
 const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => {
-  
+  const user = await currentUser();
+  const userId = user?.publicMetadata.userId;
+
   const recipe = await fetchRecipeById(id);
   if(!recipe) {
     return (
@@ -174,6 +178,16 @@ const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => 
               </span>
             ))}
           </div>
+          {recipe.createdBy == userId && (
+            <div className='mt-3 border-t'>
+              <Link href={`/edit-recipe/${recipe._id}` }>
+                <button className='flex bg-black px-4 py-2 rounded-lg mt-3 text-orange-100 font-bold hover:bg-gray-800 gap-2'>
+                  Edit Recipe <CookingPot className="w-5 h-5 text-orange-100 hidden lg:inline-block" />
+                </button>
+              </Link>
+              
+            </div>
+          )}
         </footer>
       )}
     </article>
