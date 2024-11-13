@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { UploadButton } from '../lib/uploadthing';
 import "@uploadthing/react/styles.css";
-
+import { ClientUploadedFileData } from 'uploadthing/types';
 interface Ingredient {
   id: number;
   name: string;
@@ -21,7 +21,7 @@ const CreateRecipe = () => {
     { id: 1, name: '', quantity: '' }
   ]);
 
-  const handleUploadComplete = (res: any) => {
+  const handleUploadComplete = (res:  ClientUploadedFileData<{ imageUrl: string }>[]) => {
     const uploadedUrl = res[0]?.url;
     setImageUrl(uploadedUrl); // Set image URL from UploadThing response
     console.log("Upload Completed");
