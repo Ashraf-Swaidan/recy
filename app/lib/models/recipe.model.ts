@@ -49,6 +49,19 @@ const RecipeSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  likes: [
+    {
+      userId: {
+        type: Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      likedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
 });
 
 const Recipe = models?.Recipe || model("Recipe", RecipeSchema);

@@ -1,19 +1,22 @@
 import React from 'react';
-import { Clock, Users, ChefHat, Calendar, Heart, Bookmark, CookingPot } from 'lucide-react';
+import { Clock, Users, ChefHat, Calendar, CookingPot } from 'lucide-react';
 import { fetchRecipeById } from '@/actions/recipe.action';
 import { findRecipeOwner } from '@/actions/user.action';
 import Image from 'next/image';
 import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
+import SaveRecipeButton from './SaveRecipeButton';
+import LikeRecipeButton from './LikeRecipeButton';
 interface RecipeDetailedCardProps {
  id: string
 }
 
 const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => {
   const user = await currentUser();
-  const userId = user?.publicMetadata.userId;
+  const userId = user?.publicMetadata.userId as string;
 
   const recipe = await fetchRecipeById(id);
+  console.log(recipe)
   if(!recipe) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-orange-50">
@@ -70,13 +73,9 @@ const RecipeDetailedCard: React.FC<RecipeDetailedCardProps> = async ({ id }) => 
               </div>
             </div>
           </div>
-          <div className="flex space-x-3">
-            <button className="p-2 hover:bg-orange-50 rounded-full transition-colors">
-              <Heart className="w-6 h-6 text-orange-500" />
-            </button>
-            <button className="p-2 hover:bg-orange-50 rounded-full transition-colors">
-              <Bookmark className="w-6 h-6 text-orange-500" />
-            </button>
+          <div className="flex space-x-3"> 
+            <LikeRecipeButton userId={userId} recipeId={recipe._id.toString()} likes={recipe.likes?.length}/>
+            <SaveRecipeButton userId={userId} recipeId={recipe._id.toString()} />
           </div>
         </div>
 

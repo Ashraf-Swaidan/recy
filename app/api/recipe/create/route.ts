@@ -42,7 +42,6 @@ export async function POST(request: NextRequest) {
 
     // Filter out empty tags
     const tags = body.tags?.filter(tag => tag.trim()) || [];
-
     // Create recipe object
     const recipe = {
       title: body.title,
@@ -55,6 +54,7 @@ export async function POST(request: NextRequest) {
       tags,
       imageUrl: body.imageUrl || '',
       createdBy: user.publicMetadata.userId,
+      likes: []
     };
 
     // Save to database
@@ -136,6 +136,12 @@ export async function PATCH(request: NextRequest) {
         { error: 'Recipe not found or you do not have permission to update it' },
         { status: 404 }
       );
+    }
+
+    // Ensure likes array remains intact if not updated
+    if (!updatedRecipe.likes) {
+      updatedRecipe.likes = [];
+      await updatedRecipe.save();
     }
 
     return NextResponse.json(updatedRecipe, { status: 200 });
