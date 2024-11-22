@@ -113,7 +113,7 @@ const EditRecipeForm = () => {
     const tagsText = formData.get('tags') as string;
     const tags = tagsText ? tagsText.split(',').map((tag) => tag.trim()).filter((tag) => tag) : [];
 
-    type EditableRecipeData = Omit<RecipeInterface, 'createdBy' | 'createdAt'>;
+    type EditableRecipeData = Omit<RecipeInterface, 'createdBy' | 'createdAt' | 'likes'>;
     
     const recipeData: EditableRecipeData = {
       _id: recipe?._id,
@@ -126,6 +126,7 @@ const EditRecipeForm = () => {
       servings: Number(formData.get('servings')),
       tags,
       imageUrl,
+  
     };
 
     try {
