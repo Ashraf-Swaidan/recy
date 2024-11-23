@@ -7,6 +7,7 @@ import { connect } from '@/app/lib/db';
 import { Types } from "mongoose";
 import { fetchRecipeById } from "./recipe.action";
 
+
 export async function createUser(user: any){
     try{
         await connect();
@@ -28,7 +29,6 @@ export async function findRecipeOwner(id: string): Promise<UserInterface | null>
         return null
     }
 }
-
 
 export async function fetchUserCookbook(userId: string): Promise<CookbookInterface | null> {
     try {
@@ -77,3 +77,4 @@ export async function fetchUserCookbook(userId: string): Promise<CookbookInterfa
       return null;
     }
   }
+

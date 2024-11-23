@@ -9,7 +9,7 @@ interface RecipeCardProps {
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full flex flex-col">
       {/* Image Section */}
       <div className="relative w-full h-48">
         <Image

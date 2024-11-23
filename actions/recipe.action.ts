@@ -5,7 +5,9 @@ import User from '@/app/lib/models/user.model';
 import Cookbook from '@/app/lib/models/cookbook.model';
 import { RecipeInterface, Like } from '@/app/lib/types';
 import { Types } from 'mongoose';
+import { RecipeWithOwner } from '@/app/lib/types';
 
+ // fetch all recipes
   export async function fetchRecipes() {
     try {
       await connect(); // Ensure the database connection is established
@@ -33,6 +35,7 @@ import { Types } from 'mongoose';
     }
   }
 
+ // Fetch certain recipe
   export async function fetchRecipeById(id: string): Promise<RecipeInterface | null>{
     try{
       await connect();
@@ -58,6 +61,41 @@ import { Types } from 'mongoose';
     }
   }
   
+  export async function fetchRecipeWithOwnerById(id: string) {
+    try {
+      await connect(); // Ensure database connection
+  
+      // Validate the ID
+      if (!Types.ObjectId.isValid(id)) {
+        console.error('Invalid recipe ID:', id);
+        return null;
+      }
+  
+      // Fetch the recipe by ID
+      const recipe = await Recipe.findById(id);
+      if (!recipe) {
+        console.error('Recipe not found:', id);
+        return null;
+      }
+  
+      // Fetch the owner using the `createdBy` field
+      const owner = await User.findById(recipe.createdBy);
+      if (!owner) {
+        console.error('Owner not found for recipe:', id);
+        return null;
+      }
+  
+      // Return the recipe enriched with owner details
+      return {
+        ...recipe.toObject(), // Convert Mongoose document to plain object
+        owner: owner ? owner.toObject() : null, // Attach user data (owner) to recipe
+      };
+    } catch (error) {
+      console.error('Error fetching recipe with owner:', error);
+      return null;
+    }
+  }
+
  // Like a recipe
 export async function likeRecipe(userId: string, recipeId: string): Promise<boolean> {
   try {
@@ -93,6 +131,7 @@ export async function likeRecipe(userId: string, recipeId: string): Promise<bool
   }
 }
 
+ // unlike a recipe
 export async function unlikeRecipe(userId: string, recipeId: string): Promise<boolean> {
   try {
     await connect();
@@ -125,6 +164,7 @@ export async function unlikeRecipe(userId: string, recipeId: string): Promise<bo
   }
 }
 
+ // check if this recipe is liked by the user
 export async function isRecipeLikedByUser(userId: string, recipeId: string): Promise<boolean> {
   try {
     await connect();
@@ -149,8 +189,6 @@ export async function isRecipeLikedByUser(userId: string, recipeId: string): Pro
     return false;
   }
 }
-
-
 
 // Add a recipe to the user's cookbook
 export async function addToCookbook(userId: string, recipeId: string): Promise<boolean> {

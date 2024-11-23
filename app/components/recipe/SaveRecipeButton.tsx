@@ -20,6 +20,7 @@ const SaveRecipeButton: React.FC<SaveRecipeButtonProps> = ({ userId, recipeId })
     const checkIfRecipeIsSaved = async () => {
       try {
         const cookbook = await fetchUserCookbook(userId);
+        console.log(cookbook)
         
         // Check if the recipeId is in the savedRecipes array
         const saved = cookbook?.savedRecipes.some(

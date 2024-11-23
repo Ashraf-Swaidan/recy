@@ -45,6 +45,17 @@ const Navbar = () => {
                 Create Recipe
               </div>
             </Link>
+            <Link href="/MyCookbook">
+              <div
+                className={`${
+                  pathname === "/MyCookbook"
+                    ? "font-bold text-orange-600"
+                    : "text-stone-600"
+                } `}
+              >
+                My Cookbook
+              </div>
+            </Link>
 
             {/* Login and Signup links for desktop if user is signed out */}
             {!userId && (
@@ -134,6 +145,18 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Create Recipe
+            </div>
+          </Link>
+          <Link href="/MyCookbook">
+            <div
+              className={`${
+                pathname === "/MyCookbook"
+                  ? "font-bold text-stone-800"
+                  : "text-stone-600"
+              } hover:text-stone-800 transition duration-200`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              My Cookbook
             </div>
           </Link>
 
