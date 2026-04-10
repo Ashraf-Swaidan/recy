@@ -6,14 +6,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RecipeInterface  } from '@/app/lib/types';
 import { Types } from 'mongoose';
 
-type Props = {
-    params: Promise<{ id: string }>
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-  }
-
-export async function GET(request: NextRequest, { params }: Props) {
+export async function GET(
+  _request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
     try {
-    const id = (await params).id
+    const id = (await context.params).id
       await connect();
       const user = await currentUser();
       

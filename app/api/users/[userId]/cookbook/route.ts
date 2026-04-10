@@ -6,13 +6,13 @@ import { fetchRecipeById } from '@/actions/recipe.action';
 import { CookbookInterface, SavedRecipe } from "@/app/lib/types";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ userId: string }> }
 ) {
   console.log('Fetching user cookbook');
 
   try {
-    const { userId } = params;
+    const { userId } = await context.params;
 
     // Validate the user ID
     if (!Types.ObjectId.isValid(userId)) {

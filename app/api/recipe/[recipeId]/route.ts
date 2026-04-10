@@ -5,11 +5,11 @@ import User from '@/app/lib/models/user.model';
 import { Types } from 'mongoose';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { recipeId: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ recipeId: string }> }
 ) {
   try {
-    const { recipeId } = params;
+    const { recipeId } = await context.params;
 
     // Validate the ID
     if (!Types.ObjectId.isValid(recipeId)) {

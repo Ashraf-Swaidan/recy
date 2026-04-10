@@ -15,7 +15,14 @@ import { createClerkClient } from "@clerk/backend";
  * so this keeps local dev and missed webhooks working.
  */
 export async function ensureUserSynced() {
-  const user = await currentUser();
+  let user;
+  try {
+    user = await currentUser();
+  } catch {
+    // Root layout runs for some requests where middleware is skipped (e.g. `/_next/static/...`),
+    // so Clerk has no auth context — skip sync for that request.
+    return;
+  }
   if (!user) return;
 
   if (user.publicMetadata?.userId) return;
