@@ -30,8 +30,10 @@ import { Types } from 'mongoose';
   
       return JSON.parse(JSON.stringify(recipesWithUsers)); // Return the recipes with their corresponding user (owner) data
     } catch (error) {
-      console.error('Error fetching recipes:', error);
-      throw new Error('Failed to fetch recipes');
+      const detail =
+        error instanceof Error ? error.message : typeof error === "string" ? error : JSON.stringify(error);
+      console.error("[fetchRecipes]", detail, error);
+      throw new Error("Failed to fetch recipes");
     }
   }
 
