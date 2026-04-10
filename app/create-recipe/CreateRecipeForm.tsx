@@ -2,9 +2,7 @@
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { UploadButton } from '../lib/uploadthing';
-
-import { ClientUploadedFileData } from 'uploadthing/types';
+import { UploadButton, resolveUploadedImageUrl } from '../lib/uploadthing';
 interface Ingredient {
   id: number;
   name: string;
@@ -20,10 +18,8 @@ const CreateRecipe = () => {
     { id: 1, name: '', quantity: '' }
   ]);
 
-  const handleUploadComplete = (res:  ClientUploadedFileData<{ imageUrl: string }>[]) => {
-    const uploadedUrl = res[0]?.url;
-    setImageUrl(uploadedUrl); // Set image URL from UploadThing response
-    console.log("Upload Completed");
+  const handleUploadComplete = (res: Parameters<typeof resolveUploadedImageUrl>[0]) => {
+    setImageUrl(resolveUploadedImageUrl(res));
   };
 
   const addIngredient = () => {

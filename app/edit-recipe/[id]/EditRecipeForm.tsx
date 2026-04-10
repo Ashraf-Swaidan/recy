@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
-import { UploadButton } from '@/app/lib/uploadthing';
-import { ClientUploadedFileData } from 'uploadthing/types';
+import { UploadButton, resolveUploadedImageUrl } from '@/app/lib/uploadthing';
 import { RecipeInterface } from '@/app/lib/types';
 import FormSkeleton from '@/app/components/skeletons/FormSkeleton';
 
@@ -63,10 +62,8 @@ const EditRecipeForm = () => {
     fetchRecipe();
   }, [id]);
 
-  const handleUploadComplete = (res: ClientUploadedFileData<{ imageUrl: string }>[]) => {
-    const uploadedUrl = res[0]?.url;
-    setImageUrl(uploadedUrl); // Set image URL from UploadThing response
-    console.log('Upload Completed');
+  const handleUploadComplete = (res: Parameters<typeof resolveUploadedImageUrl>[0]) => {
+    setImageUrl(resolveUploadedImageUrl(res));
   };
 
   const addIngredient = () => {
