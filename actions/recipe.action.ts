@@ -5,7 +5,7 @@ import User from '@/app/lib/models/user.model';
 import Cookbook from '@/app/lib/models/cookbook.model';
 import { RecipeInterface, Like } from '@/app/lib/types';
 import { Types } from 'mongoose';
-import { RecipeWithOwner } from '@/app/lib/types';
+
 
  // fetch all recipes
   export async function fetchRecipes() {

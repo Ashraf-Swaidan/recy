@@ -61,11 +61,18 @@ export async function POST(req: Request) {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
 
+    const email = email_addresses[0]?.email_address ?? "";
+    const resolvedUsername =
+      username ??
+      first_name ??
+      (email.includes("@") ? email.split("@")[0] : null) ??
+      "user";
+
     const user = {
       clerkId: id,
-      email: email_addresses[0].email_address,
-      username: username!,
-      photo: image_url!,
+      email: email || `${id}@placeholder.local`,
+      username: resolvedUsername,
+      photo: image_url ?? "",
       firstName: first_name,
       lastName: last_name,
     };

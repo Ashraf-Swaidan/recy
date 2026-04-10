@@ -6,7 +6,54 @@ import { UserInterface, CookbookInterface, SavedRecipe } from "@/app/lib/types";
 import { connect } from '@/app/lib/db';
 import { Types } from "mongoose";
 import { fetchRecipeById } from "./recipe.action";
+import { currentUser } from "@clerk/nextjs/server";
+import { createClerkClient } from "@clerk/backend";
 
+/**
+ * Ensures the signed-in Clerk user exists in MongoDB and has publicMetadata.userId.
+ * Webhooks only run when Clerk can reach your URL (e.g. not localhost without a tunnel),
+ * so this keeps local dev and missed webhooks working.
+ */
+export async function ensureUserSynced() {
+  const user = await currentUser();
+  if (!user) return;
+
+  if (user.publicMetadata?.userId) return;
+
+  await connect();
+
+  let dbUser = await User.findOne({ clerkId: user.id });
+  if (!dbUser) {
+    const email = user.emailAddresses[0]?.emailAddress ?? "";
+    const username =
+      user.username ??
+      user.firstName ??
+      (email.includes("@") ? email.split("@")[0] : null) ??
+      "user";
+
+    dbUser = await User.create({
+      clerkId: user.id,
+      email: email || `${user.id}@placeholder.local`,
+      username,
+      photo: user.imageUrl ?? "",
+      firstName: user.firstName ?? undefined,
+      lastName: user.lastName ?? undefined,
+    });
+  }
+
+  const secretKey = process.env.CLERK_SECRET_KEY;
+  if (!secretKey) return;
+
+  const clerkClient = createClerkClient({ secretKey });
+  await clerkClient.users.updateUserMetadata(user.id, {
+    publicMetadata: {
+      ...(typeof user.publicMetadata === "object" && user.publicMetadata !== null
+        ? (user.publicMetadata as Record<string, unknown>)
+        : {}),
+      userId: dbUser._id.toString(),
+    },
+  });
+}
 
 export async function createUser(user: any){
     try{
@@ -31,6 +78,7 @@ export async function findRecipeOwner(id: string): Promise<UserInterface | null>
 }
 
 export async function fetchUserCookbook(userId: string): Promise<CookbookInterface | null> {
+  console.log('fetching user cookbook')
     try {
       await connect();
   
@@ -41,7 +89,6 @@ export async function fetchUserCookbook(userId: string): Promise<CookbookInterfa
   
       // Fetch the cookbook for the user
       const cookbook = await Cookbook.findOne({ userId }).lean().exec() as CookbookInterface | null;
-      console.log(cookbook)
   
       if (!cookbook || !cookbook.savedRecipes.length) {
         return null; // Return null if no recipes are saved

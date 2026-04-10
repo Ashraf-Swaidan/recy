@@ -8,6 +8,7 @@ import {
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { ensureUserSynced } from "@/actions/user.action";
 // import {Inter} from 'next/font/google';
 
 // const inter = Inter({
@@ -33,11 +34,13 @@ export const metadata: Metadata = {
   description: "Your Go-to Recipe Library",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await ensureUserSynced();
+
   return (
     <ClerkProvider>
     <html lang="en">
