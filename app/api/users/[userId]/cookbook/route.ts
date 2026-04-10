@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connect } from '@/app/lib/db';
-import User from "@/app/lib/models/user.model";
 import Cookbook from "@/app/lib/models/cookbook.model";
 import { Types } from "mongoose";
 import { fetchRecipeById } from '@/actions/recipe.action';
